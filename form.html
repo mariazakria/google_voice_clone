@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+      <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+      <title>Google Voice Clone</title>
+      <style>
+         html, body {
+            height: 100%;
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+
+
+        .container-fluid {
+            height: 100% !important;
+        }
+         .header {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+            background-color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+         }
+         .logo-container {
+            display: flex;
+            align-items: center;
+         }
+         .logo-container img {
+            height: 32px;
+            margin-left: 10px;
+         }
+         .search-bar {
+            position: relative;
+            display: flex;
+            align-items: center;
+            width: 50%;
+         }
+         .search-bar input {
+            padding: 10px 40px 10px 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            width: 100%;
+         }
+         .search-bar .fa-search {
+            position: absolute;
+            right: 10px;
+            color: #888;
+         }
+         .flex-shrink-0 {
+            display: flex;
+            align-items: center;
+         }
+         @media (max-width: 767.98px) {
+         .header {
+            flex-wrap: wrap;
+         }
+         .search-bar {
+            order: 3;
+            width: 100%;
+            margin-top: 10px;
+         }
+         .logo-container {
+            order: 1;
+         }
+         .flex-shrink-0 {
+            order: 2;
+         }
+         }
+         .message-content a {
+            color: black;
+            text-decoration: none;
+         }
+         /* Sidebar */
+         .sidebar {
+            background-color: white;
+            padding: 10px 0;
+            border-right: 1px solid #ddd;
+            z-index: 1000;
+            position: relative;
+         }
+         .sidebar .btn {
+            background-color: transparent;
+            border: none;
+            margin: 0 10px;
+            font-size: 24px;
+            color: #333;
+            transition: color 0.3s, transform 0.3s;
+         }
+         
+         .sidebar .btn:focus {
+            outline: none;
+            color: #007bff;
+         }
+         .content {
+            padding: 20px;
+         }
+         @media (max-width: 770px) {
+            .sidebar {
+               flex-direction: row;
+               bottom: 0;
+               width: 100%;
+               height: 60px;
+               border-top: 1px solid #dee2e6;
+               border-right: none;
+               justify-content: space-around;
+            }
+            .sidebar .btn {
+               margin: 0;
+            }
+         }
+         @media (min-width: 770px) {
+            .sidebar {
+                flex-direction: column; 
+            }
+
+            .sidebar .icon {
+                margin: 5px 0; 
+                text-align: center; 
+            }
+        }
+         .messages-list {
+            list-style: none;
+            padding: 0;
+         }
+         .message-item {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+            cursor: pointer;
+         }
+         .message-item.active {
+            background-color: #f1f1f1;
+         }
+         .message-info {
+            margin-left: 10px;
+         }
+         .reply-container {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            border-top: 1px solid #ddd;
+         }
+         .reply-container .attachment-icon {
+            margin-right: 10px;
+         }
+         .reply-container .reply-input {
+            flex-grow: 1;
+            padding: 5px 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+         }
+         .reply-container .reply-button {
+            margin-left: 10px;
+         }
+         .container_main {
+            height: 100%;
+         }
+         .container_message {
+            height: 100%;
+         }
+         @media (max-width: 769.98px) {
+            .sidebar {
+               display: flex;
+               justify-content: space-around;
+               padding: 1px;
+               background-color: #f1f1f1;
+               position: fixed;
+               bottom: 0;
+               width: 100%;
+               z-index: 999;
+            }
+            .main-content {
+               margin-bottom: 50px; 
+            }
+            .col-md-8{
+               display: none;
+            }
+            .col-md-4 {
+               display: block; 
+            }
+         }
+         .navbar-footer {
+            display: flex;
+            justify-content: space-around;
+            padding: 10px;
+            background-color: #f1f1f1;
+            border-top: 1px solid #ddd;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+         }
+         .navbar-footer a {
+            text-decoration: none;
+            color: #333;
+         }
+         .navbar-footer a:hover {
+            color: #007bff;
+         }
+         .message-header {
+            display: flex;
+            justify-content: space-between;
+         }
+         @media (min-width: 770px) {
+            .navbar-footer {
+               display: none;
+            }
+         }
+         @media (min-width: 770px) {
+            .col-md-4 {
+             display: block;
+            }
+            .container_main {
+               display: block;
+            }
+            .col-md-8 {
+               display: block;
+            }
+            #messageContent {
+               display: block !important;
+               padding-left: 89px;
+            }
+            #btn_arrow{
+               display: none;
+            }
+            .message-header h2{
+               display: none;
+            }
+         }
+         .active-btn {
+            background-color: blue;
+            color: white;
+         }
+
+         @media (min-width: 1200px) {
+           .col-md-4 {
+             width: 18.333% !important;
+           }
+         }
+         @media (min-width: 1600px) {
+           .col-md-1 {
+             width: 3.333% !important;
+           }
+         }
+        @media (min-width: 768px) {
+            .col-md-1 {
+                flex: 0 0 auto;
+                width: 6.333333%;
+            }
+        }
+
+      </style>
+   </head>
+   <body>
+      <header class="header">
+         <div class="logo-container">
+            <i class="fa-solid fa-bars"></i>
+            <img src="./google-icon-2048x673-w3o7skkh.png" alt="Google Voice Logo">
+            <h1>Voice</h1>
+         </div>
+         <form class="search-bar">
+            <input type="text" placeholder="Search Google Voice">
+            <i class="fa fa-search"></i>
+         </form>
+         <div class="d-flex align-items-center flex-shrink-0">
+            <div class="dropdown">
+               <a href="#" class="d-block link-dark text-decoration-none dropdown-toggle" id="dropdownUser2" data-bs-toggle="dropdown" aria-expanded="false">
+               <img src="https://github.com/mdo.png" alt="mdo" width="32" height="32" class="rounded-circle">
+               </a>
+               <ul class="dropdown-menu text-small shadow" aria-labelledby="dropdownUser2" style="z-index: 999;">
+                  <li><a class="dropdown-item" href="#">New project...</a></li>
+                  <li><a class="dropdown-item" href="#">Settings</a></li>
+                  <li><a class="dropdown-item" href="#">Profile</a></li>
+                  <li>
+                     <hr class="dropdown-divider">
+                  </li>
+                  <li><a class="dropdown-item" href="#">Sign out</a></li>
+               </ul>
+            </div>
+         </div>
+      </header>
+      <div class="container-fluid">
+         <div class="row">
+            <aside class="sidebar col-md-1">
+               <button class="btn" onclick="showContent('message', this)"><i class="fa-solid fa-message"></i></button>
+               <button class="btn" onclick="showContent('calls', this)"><i class="fa fa-phone"></i></button>
+               <button class="btn" onclick="showContent('voicemail', this)"><i class="fa fa-voicemail"></i></button>
+               <button class="btn" onclick="showContent('messages', this)"><i class="fa-solid fa-ellipsis-vertical"></i></button>
+            </aside>
+            <main class="main-content col-md-11">
+               <div id="message" class="content">
+                  <div class="row">
+                     <div id="sidebar" class="col-md-4">
+                        <div class="sidebar_main" id="new-message-container">
+                           <button class="new-message btn btn-primary mb-3 w-100">
+                           <i class="fas fa-edit"></i> Send new message
+                           </button>
+                           <ul class="messages-list">
+                              <li class="message-item" data-id="1" onclick="showMessage(1)">
+                                 <div class="icon"><i class="fas fa-user-circle"></i></div>
+                                 <div class="message-info">
+                                    <span class="number">877-805-0960</span>
+                                    <span class="preview">You were sent a message that...</span>
+                                 </div>
+                              </li>
+                              <li class="message-item" data-id="2" onclick="showMessage(2)">
+                                 <div class="icon"><i class="fas fa-user-circle"></i></div>
+                                 <div class="message-info">
+                                    <span class="number">71507</span>
+                                    <span class="preview">Jon-Don: Choose your deal!...</span>
+                                 </div>
+                              </li>
+                              <li class="message-item" data-id="3" onclick="showMessage(3)">
+                                 <div class="icon"><i class="fas fa-user-circle"></i></div>
+                                 <div class="message-info">
+                                    <span class="number">323-942-3276</span>
+                                    <span class="preview">Your access code is 482...</span>
+                                 </div>
+                              </li>
+                              <li class="message-item" data-id="4" onclick="showMessage(4)">
+                                 <div class="icon"><i class="fas fa-user-circle"></i></div>
+                                 <div class="message-info">
+                                    <span class="number">126-933-6927</span>
+                                    <span class="preview">Your ticket has been crea...</span>
+                                 </div>
+                              </li>
+                           </ul>
+                        </div>
+                     </div>
+                     <div class="col-md-8 container_main" id="messageContent" style="display:none;">
+                        <div class="message-content">
+                           <div class="message-header">
+                              <h2>Message Details</h2>
+                              <button id="btn_arrow" class="btn" onclick="goBack()">
+                              <i class="fa fa-arrow-left"></i>
+                              </button>
+                           </div>
+                           <div class="container_message" id="message1" style="display:none;">
+                              <div class="message">
+                                 <div class="message-header">
+                                    <div class="sender-number">877-805-0960</div>
+                                    <div class="menu-icon">⋮</div>
+                                 </div>
+                                 <div class="message-content">
+                                    <div class="timestamp">Jul 15, 10:39 AM</div>
+                                    <p> WGAN Price Alert on Matterport Pro3 Camera Bundle: 
+                                       <a href="https://txt.so/5v94ve">https://txt.so/5v94ve</a> ($5,276) 
+                                       (Also 3 Pro2 Bundle: 
+                                       <a href="https://txt.so/XY4Pu8">https://txt.so/XY4Pu8</a> 
+                                       <a href="https://txt.so/A0Ftna">https://txt.so/A0Ftna</a>)
+                                       - Best, Dan Smigrod, We Get Around Network Forum
+                                       <br>Reply stop to stop
+                                    </p>
+                                 </div>
+                                 <div class="message-content">
+                                    <div class="timestamp">Jul 15, 10:39 AM</div>
+                                    <p> WGAN Price Alert on Matterport Pro3 Camera Bundle: 
+                                       <a href="https://txt.so/5v94ve">https://txt.so/5v94ve</a> ($5,276) 
+                                       (Also 3 Pro2 Bundle: 
+                                       <a href="https://txt.so/XY4Pu8">https://txt.so/XY4Pu8</a> 
+                                       <a href="https://txt.so/A0Ftna">https://txt.so/A0Ftna</a>)
+                                       - Best, Dan Smigrod, We Get Around Network Forum
+                                       <br>Reply stop to stop
+                                    </p>
+                                 </div>
+                                 <div class="message-content">
+                                    <div class="timestamp">Jul 15, 10:39 AM</div>
+                                    <p> WGAN Price Alert on Matterport Pro3 Camera Bundle: 
+                                       <a href="https://txt.so/5v94ve">https://txt.so/5v94ve</a> ($5,276) 
+                                       (Also 3 Pro2 Bundle: 
+                                       <a href="https://txt.so/XY4Pu8">https://txt.so/XY4Pu8</a> 
+                                       <a href="https://txt.so/A0Ftna">https://txt.so/A0Ftna</a>)
+                                       - Best, Dan Smigrod, We Get Around Network Forum
+                                       <br>Reply stop to stop
+                                    </p>
+                                 </div>
+                                 <div class="message-content">
+                                    <div class="timestamp">Jul 15, 10:39 AM</div>
+                                    <p> WGAN Price Alert on Matterport Pro3 Camera Bundle: 
+                                       <a href="https://txt.so/5v94ve">https://txt.so/5v94ve</a> ($5,276) 
+                                       (Also 3 Pro2 Bundle: 
+                                       <a href="https://txt.so/XY4Pu8">https://txt.so/XY4Pu8</a> 
+                                       <a href="https://txt.so/A0Ftna">https://txt.so/A0Ftna</a>)
+                                       - Best, Dan Smigrod, We Get Around Network Forum
+                                       <br>Reply stop to stop
+                                    </p>
+                                 </div>
+                                 <div class="message-content">
+                                    <div class="timestamp">Jul 15, 10:39 AM</div>
+                                    <p> WGAN Price Alert on Matterport Pro3 Camera Bundle: 
+                                       <a href="https://txt.so/5v94ve">https://txt.so/5v94ve</a> ($5,276) 
+                                       (Also 3 Pro2 Bundle: 
+                                       <a href="https://txt.so/XY4Pu8">https://txt.so/XY4Pu8</a> 
+                                       <a href="https://txt.so/A0Ftna">https://txt.so/A0Ftna</a>)
+                                       - Best, Dan Smigrod, We Get Around Network Forum
+                                       <br>Reply stop to stop
+                                    </p>
+                                 </div>
+                              </div>
+                           </div>
+                           <div class="container_message" id="message2" style="display:none;">
+                              <div class="message">
+                                 <div class="message-header">
+                                    <div class="sender-number">71507</div>
+                                    <div class="menu-icon">⋮</div>
+                                 </div>
+                                 <div class="message-content">
+                                    <div class="timestamp">Jul 15, 10:39 AM</div>
+                                    <p> WGAN Price Alert on Matterport Pro3 Camera Bundle: 
+                                       <a href="https://txt.so/5v94ve">https://txt.so/5v94ve</a> ($5,276) 
+                                       (Also 3 Pro2 Bundle: 
+                                       <a href="https://txt.so/XY4Pu8">https://txt.so/XY4Pu8</a> 
+                                       <a href="https://txt.so/A0Ftna">https://txt.so/A0Ftna</a>)
+                                       - Best, Dan Smigrod, We Get Around Network Forum
+                                       <br>Reply stop to stop
+                                    </p>
+                                 </div>
+                                 <div class="message-content">
+                                    <div class="timestamp">Jul 15, 10:39 AM</div>
+                                    <p> WGAN Price Alert on Matterport Pro3 Camera Bundle: 
+                                       <a href="https://txt.so/5v94ve">https://txt.so/5v94ve</a> ($5,276) 
+                                       (Also 3 Pro2 Bundle: 
+                                       <a href="https://txt.so/XY4Pu8">https://txt.so/XY4Pu8</a> 
+                                       <a href="https://txt.so/A0Ftna">https://txt.so/A0Ftna</a>)
+                                       - Best, Dan Smigrod, We Get Around Network Forum
+                                       <br>Reply stop to stop
+                                    </p>
+                                 </div>
+                                 <div class="message-content">
+                                    <div class="timestamp">Jul 15, 10:39 AM</div>
+                                    <p> WGAN Price Alert on Matterport Pro3 Camera Bundle: 
+                                       <a href="https://txt.so/5v94ve">https://txt.so/5v94ve</a> ($5,276) 
+                                       (Also 3 Pro2 Bundle: 
+                                       <a href="https://txt.so/XY4Pu8">https://txt.so/XY4Pu8</a> 
+                                       <a href="https://txt.so/A0Ftna">https://txt.so/A0Ftna</a>)
+                                       - Best, Dan Smigrod, We Get Around Network Forum
+                                       <br>Reply stop to stop
+                                    </p>
+                                 </div>
+                              </div>
+                           </div>
+                           <div class="container_message" id="message3" style="display:none;">
+                              <div class="message">
+                                 <div class="message-header">
+                                    <div class="sender-number">323-942-3276</div>
+                                    <div class="menu-icon">⋮</div>
+                                 </div>
+                                 <div class="message-content">
+                                    <div class="timestamp">Jul 15, 10:39 AM</div>
+                                    <p> WGAN Price Alert on Matterport Pro3 Camera Bundle: 
+                                       <a href="https://txt.so/5v94ve">https://txt.so/5v94ve</a> ($5,276) 
+                                       (Also 3 Pro2 Bundle: 
+                                       <a href="https://txt.so/XY4Pu8">https://txt.so/XY4Pu8</a> 
+                                       <a href="https://txt.so/A0Ftna">https://txt.so/A0Ftna</a>)
+                                       - Best, Dan Smigrod, We Get Around Network Forum
+                                       <br>Reply stop to stop
+                                    </p>
+                                 </div>
+                                 <div class="message-content">
+                                    <div class="timestamp">Jul 15, 10:39 AM</div>
+                                    <p> WGAN Price Alert on Matterport Pro3 Camera Bundle: 
+                                       <a href="https://txt.so/5v94ve">https://txt.so/5v94ve</a> ($5,276) 
+                                       (Also 3 Pro2 Bundle: 
+                                       <a href="https://txt.so/XY4Pu8">https://txt.so/XY4Pu8</a> 
+                                       <a href="https://txt.so/A0Ftna">https://txt.so/A0Ftna</a>)
+                                       - Best, Dan Smigrod, We Get Around Network Forum
+                                       <br>Reply stop to stop
+                                    </p>
+                                 </div>
+                                 <div class="message-content">
+                                    <div class="timestamp">Thu 1:14 PM</div>
+                                    <p> You were sent a message that contains rich media not supported by your carrier. See the message here: 
+                                       <a href="https://txt.so/JKZrby">https://txt.so/JKZrby</a>
+                                       <br>Reply stop to stop
+                                    </p>
+                                 </div>
+                              </div>
+                           </div>
+                           <div class="container_message" id="message4" style="display:none;">
+                              <div class="message">
+                                 <div class="message-header">
+                                    <div class="sender-number">126-933-6927</div>
+                                    <div class="menu-icon">⋮</div>
+                                 </div>
+                                 <div class="message-content">
+                                    <div class="timestamp">Jul 15, 10:39 AM</div>
+                                    <p> WGAN Price Alert on Matterport Pro3 Camera Bundle: 
+                                       <a href="https://txt.so/5v94ve">https://txt.so/5v94ve</a> ($5,276) 
+                                       (Also 3 Pro2 Bundle: 
+                                       <a href="https://txt.so/XY4Pu8">https://txt.so/XY4Pu8</a> 
+                                       <a href="https://txt.so/A0Ftna">https://txt.so/A0Ftna</a>)
+                                       - Best, Dan Smigrod, We Get Around Network Forum
+                                       <br>Reply stop to stop
+                                    </p>
+                                 </div>
+                                 <div class="message-content">
+                                    <div class="timestamp">Jul 15, 10:39 AM</div>
+                                    <p> WGAN Price Alert on Matterport Pro3 Camera Bundle: 
+                                       <a href="https://txt.so/5v94ve">https://txt.so/5v94ve</a> ($5,276) 
+                                       (Also 3 Pro2 Bundle: 
+                                       <a href="https://txt.so/XY4Pu8">https://txt.so/XY4Pu8</a> 
+                                       <a href="https://txt.so/A0Ftna">https://txt.so/A0Ftna</a>)
+                                       - Best, Dan Smigrod, We Get Around Network Forum
+                                       <br>Reply stop to stop
+                                    </p>
+                                 </div>
+                                 <div class="message-content">
+                                    <div class="timestamp">Jul 15, 10:39 AM</div>
+                                    <p> WGAN Price Alert on Matterport Pro3 Camera Bundle: 
+                                       <a href="https://txt.so/5v94ve">https://txt.so/5v94ve</a> ($5,276) 
+                                       (Also 3 Pro2 Bundle: 
+                                       <a href="https://txt.so/XY4Pu8">https://txt.so/XY4Pu8</a> 
+                                       <a href="https://txt.so/A0Ftna">https://txt.so/A0Ftna</a>)
+                                       - Best, Dan Smigrod, We Get Around Network Forum
+                                       <br>Reply stop to stop
+                                    </p>
+                                 </div>
+                                 <div class="message-content">
+                                    <div class="timestamp">Jul 15, 10:39 AM</div>
+                                    <p> WGAN Price Alert on Matterport Pro3 Camera Bundle: 
+                                       <a href="https://txt.so/5v94ve">https://txt.so/5v94ve</a> ($5,276) 
+                                       (Also 3 Pro2 Bundle: 
+                                       <a href="https://txt.so/XY4Pu8">https://txt.so/XY4Pu8</a> 
+                                       <a href="https://txt.so/A0Ftna">https://txt.so/A0Ftna</a>)
+                                       - Best, Dan Smigrod, We Get Around Network Forum
+                                       <br>Reply stop to stop
+                                    </p>
+                                 </div>
+                                 <div class="message-content">
+                                    <div class="timestamp">Jul 15, 10:39 AM</div>
+                                    <p> WGAN Price Alert on Matterport Pro3 Camera Bundle: 
+                                       <a href="https://txt.so/5v94ve">https://txt.so/5v94ve</a> ($5,276) 
+                                       (Also 3 Pro2 Bundle: 
+                                       <a href="https://txt.so/XY4Pu8">https://txt.so/XY4Pu8</a> 
+                                       <a href="https://txt.so/A0Ftna">https://txt.so/A0Ftna</a>)
+                                       - Best, Dan Smigrod, We Get Around Network Forum
+                                       <br>Reply stop to stop
+                                    </p>
+                                 </div>
+                                 <div class="message-content">
+                                    <div class="timestamp">Thu 1:14 PM</div>
+                                    <p> You were sent a message that contains rich media not supported by your carrier. See the message here: 
+                                       <a href="https://txt.so/JKZrby">https://txt.so/JKZrby</a>
+                                       <br>Reply stop to stop
+                                    </p>
+                                 </div>
+                              </div>
+                           </div>
+                        </div>
+                        <div class="reply-container">
+                           <i class="fas fa-paperclip attachment-icon"></i>
+                           <input type="text" class="reply-input" placeholder="Type your reply...">
+                           <button class="btn " onclick="sendMessage()">
+                           <i class="fas fa-paper-plane"></i>
+                           </button>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+               <div id="calls" class="content" style="display:none;">
+                  <h2>Calls</h2>
+               </div>
+               <div id="voicemail" class="content" style="display:none;">
+                  <h2>Voicemail</h2>
+               </div>
+               <div id="messages" class="content" style="display:none;">
+                  <h2>Messages</h2>
+               </div>
+            </main>
+         </div>
+      </div>
+      
+
+
+
+      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+      <script>
+    function showContent(contentId) {
+        var contents = document.getElementsByClassName('content');
+        for (var i = 0; i < contents.length; i++) {
+            contents[i].style.display = 'none';
+        }
+        document.getElementById(contentId).style.display = 'block';
+    }
+
+    function showMessage(messageId) {
+        var messageContent = document.getElementById('messageContent');
+        var sidebar = document.getElementById('sidebar');
+        var width = window.innerWidth;
+
+        if (width >= 770) {
+            messageContent.style.display = 'block';
+            sidebar.style.display = 'block';
+            document.getElementById('new-message-container').style.display = 'block';
+        } else {
+            messageContent.style.display = 'block';
+            sidebar.style.display = 'none';
+            document.getElementById('new-message-container').style.display = 'none';
+        }
+
+        var messages = document.getElementsByClassName('container_message');
+        for (var i = 0; i < messages.length; i++) {
+            messages[i].style.display = 'none';
+        }
+        document.getElementById('message' + messageId).style.display = 'block';
+    }
+
+    function goBack() {
+        var messageContent = document.getElementById('messageContent');
+        var sidebar = document.getElementById('sidebar');
+        messageContent.style.display = 'none';
+        sidebar.style.display = 'block';
+        document.getElementById('new-message-container').style.display = 'block';
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        var messageItems = document.getElementsByClassName('message-item');
+        for (var i = 0; i < messageItems.length; i++) {
+            messageItems[i].addEventListener('click', function() {
+                for (var j = 0; j < messageItems.length; j++) {
+                    messageItems[j].classList.remove('active');
+                }
+                this.classList.add('active');
+            });
+        }
+
+        // Open the first message by default
+        if (messageItems.length > 0) {
+            messageItems[0].classList.add('active');
+            var firstMessageId = messageItems[0].getAttribute('data-id');
+            showMessage(firstMessageId);
+        }
+    });
+
+    function showContent(sectionId, button) {
+        var sections = document.querySelectorAll('.content');
+        sections.forEach(function(section) {
+            section.style.display = 'none';
+            section.classList.remove('active');
+        });
+
+        var buttons = document.querySelectorAll('.sidebar .btn');
+        buttons.forEach(function(btn) {
+            btn.classList.remove('active');
+        });
+
+        // Show the selected section
+        var section = document.getElementById(sectionId);
+        if (section) {
+            section.style.display = 'block';
+            section.classList.add('active');
+        }
+
+        button.classList.add('active');
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        var defaultButton = document.querySelector('.sidebar .btn');
+        if (defaultButton) {
+            defaultButton.click();
+        }
+    });
+</script>
+
+   </body>
+</html>
